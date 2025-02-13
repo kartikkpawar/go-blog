@@ -2,7 +2,9 @@ package database
 
 import (
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/kartikkpawar/go-blog/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,7 +14,10 @@ import (
 var DBConnection *gorm.DB
 
 func ConnectDB() {
-	dsn := "root:root@tcp(127.0.0.1:3306)/go_fiber_blog?charset=utf8mb4&parseTime=True&loc=Local"
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("Error loading env file")
+	}
+	dsn := os.Getenv("DB_URL")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Error),
 	})
